@@ -1,4 +1,5 @@
 import random
+import matplotlib.pyplot as plt
 
 # 品物データ: (重量, 価値)
 ITEMS = [(4, 12), (2, 2), (1, 1), (10, 4), (1, 4), (5, 15), (7, 10), (3, 5)]
@@ -86,6 +87,10 @@ def run_ga():
     best_individual = None
     best_fitness_global = -1
 
+    # 最大適応度と平均適応度を記録するリスト
+    max_fitness_history = []
+    avg_fitness_history = []
+
     for gen in range(N_GENERATIONS):
         # 1. 適応度の評価
         fitnesses = [evaluate_fitness(ind) for ind in population]
@@ -99,6 +104,9 @@ def run_ga():
             best_individual = population[current_best_index]
 
         print(f"世代 {gen}: 最良適応度 = {best_fitness_global}")
+
+        max_fitness_history.append(best_fitness_global)
+        avg_fitness_history.append(sum(fitnesses) / POPULATION_SIZE)
 
         # 3. 次世代の生成
         next_population = []
@@ -121,6 +129,17 @@ def run_ga():
     print("\n--- 実行結果 ---")
     print(f"最良の総価値 (適応度): {best_fitness_global}")
     print(f"最良の組み合わせ: {best_individual}")
+
+    # 可視化
+    plt.figure(figsize=(10, 6))
+    plt.plot(max_fitness_history, label='Max Fitness')
+    plt.plot(avg_fitness_history, label='Avg Fitness')
+    plt.title('Fitness Evolution Over Generations')
+    plt.xlabel('Generation')
+    plt.ylabel('Fitness (Total Value)')
+    plt.legend()
+    plt.grid(True)
+    plt.show()
 
 
 # 実行
