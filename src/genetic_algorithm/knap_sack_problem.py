@@ -141,6 +141,40 @@ def run_ga():
     plt.grid(True)
     plt.show()
 
+    visualize_best_solution(best_individual, best_fitness_global)
+
+
+def visualize_best_solution(best_individual, best_fitness):
+    if best_individual is None:
+        return
+
+    selected_items_indices = [
+        i for i, is_selected in enumerate(best_individual) if is_selected == 1]
+
+    # 選択された品物のデータ
+    weights = [ITEMS[i][0] for i in selected_items_indices]
+    values = [ITEMS[i][1] for i in selected_items_indices]
+    item_labels = [f"Item {i+1}" for i in selected_items_indices]
+
+    total_weight = sum(weights)
+
+    fig, ax = plt.subplots(figsize=(8, 5))
+
+    # 重量と価値を積み上げ棒グラフで表示
+    ax.bar(item_labels, weights,
+           label=f'Weight (Total: {total_weight}/{MAX_CAPACITY})',
+           color='skyblue')
+    ax.bar(item_labels, values, bottom=weights,
+           label=f'Value (Total: {best_fitness})', color='orange')
+
+    ax.set_ylabel('Value and Weight')
+    ax.set_title('Best Knapsack Contents (Final Generation)')
+    ax.axhline(MAX_CAPACITY, color='r',
+               linestyle='--', label='Max Capacity')  # 最大容量ライン
+    ax.legend()
+    plt.grid(axis='y', linestyle='--')
+    plt.show()
+
 
 # 実行
 if __name__ == "__main__":
